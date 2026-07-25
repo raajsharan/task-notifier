@@ -1,6 +1,11 @@
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8001";
+// An explicitly empty VITE_API_BASE means "same origin" (relative URLs,
+// proxied by Nginx) — only fall back to localhost when it's truly unset.
+const API_BASE =
+  import.meta.env.VITE_API_BASE !== undefined
+    ? import.meta.env.VITE_API_BASE
+    : "http://localhost:8001";
 const TOKEN_KEY = "task_manager_token";
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
