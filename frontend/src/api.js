@@ -52,3 +52,12 @@ export const updateTask = (id, updates) =>
   client.patch(`/api/tasks/${id}`, updates).then((r) => r.data);
 
 export const deleteTask = (id) => client.delete(`/api/tasks/${id}`).then((r) => r.data);
+
+// ---------- Admin ----------
+
+export const adminListUsers = () => client.get("/api/admin/users").then((r) => r.data);
+
+export const adminResetPassword = (userId, newPassword) =>
+  client
+    .post(`/api/admin/users/${userId}/reset-password`, { new_password: newPassword })
+    .then((r) => r.data);

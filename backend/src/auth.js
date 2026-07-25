@@ -54,10 +54,19 @@ async function getCurrentUser(req, res, next) {
   }
 }
 
+// Must run after getCurrentUser — relies on req.user being set.
+function requireAdmin(req, res, next) {
+  if (!req.user || !req.user.isAdmin) {
+    return res.status(403).json({ detail: "Admin access required" });
+  }
+  next();
+}
+
 module.exports = {
   hashPassword,
   verifyPassword,
   createAccessToken,
   authenticateUser,
   getCurrentUser,
+  requireAdmin,
 };

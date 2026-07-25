@@ -8,7 +8,7 @@ const router = express.Router();
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function serializeUser(user) {
-  return { id: user.id, email: user.email, created_at: user.created_at };
+  return { id: user.id, email: user.email, created_at: user.created_at, is_admin: user.isAdmin };
 }
 
 router.post("/register", asyncHandler(async (req, res) => {

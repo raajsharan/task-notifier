@@ -647,3 +647,29 @@ header h1 {
   margin-right: 6px;
   vertical-align: middle;
 }
+
+/* --- Admin --- */
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-table th {
+  text-align: left;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}

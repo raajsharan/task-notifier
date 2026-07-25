@@ -11,6 +11,12 @@ const User = sequelize.define(
       allowNull: false,
       field: "hashed_password",
     },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      field: "is_admin",
+    },
   },
   {
     tableName: "users",

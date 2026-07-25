@@ -140,12 +140,18 @@ export default function Shell() {
           <NavLink to="/kanban" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
             Kanban
           </NavLink>
+          {user.is_admin && (
+            <NavLink to="/admin" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
+              Admin
+            </NavLink>
+          )}
         </nav>
       </header>
 
       <main>
         <Outlet
           context={{
+            user,
             tasks,
             loading,
             handleCreate,

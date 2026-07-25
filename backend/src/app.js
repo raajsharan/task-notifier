@@ -3,6 +3,7 @@ const cors = require("cors");
 const settings = require("./config");
 const authRoutes = require("./routes/auth");
 const taskRoutes = require("./routes/tasks");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 
