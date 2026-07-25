@@ -8,9 +8,9 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Shell />}>
-        <Route index element={<BoardPage />} />
+        <Route index element={<DashboardPage />} />
+        <Route path="board" element={<BoardPage />} />
         <Route path="kanban" element={<KanbanPage />} />
-        <Route path="dashboard" element={<DashboardPage />} />
       </Route>
     </Routes>
   );

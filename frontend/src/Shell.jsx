@@ -132,13 +132,13 @@ export default function Shell() {
         </div>
         <nav className="page-nav">
           <NavLink to="/" end className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
+            Dashboard
+          </NavLink>
+          <NavLink to="/board" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
             Board
           </NavLink>
           <NavLink to="/kanban" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
             Kanban
-          </NavLink>
-          <NavLink to="/dashboard" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
-            Dashboard
           </NavLink>
         </nav>
       </header>
