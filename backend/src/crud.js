@@ -7,6 +7,7 @@ function serializeTask(task) {
     description: task.description,
     due_date: task.dueDate,
     status: task.status,
+    stage: task.stage,
     created_at: task.created_at,
     updated_at: task.updated_at,
   };
@@ -35,6 +36,7 @@ async function updateTask(taskId, updates, ownerId) {
   if (updates.description !== undefined) patch.description = updates.description;
   if (updates.due_date !== undefined) patch.dueDate = updates.due_date;
   if (updates.status !== undefined) patch.status = updates.status;
+  if (updates.stage !== undefined) patch.stage = updates.stage;
 
   await task.update(patch);
   return serializeTask(task);

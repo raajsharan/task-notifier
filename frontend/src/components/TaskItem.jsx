@@ -1,4 +1,4 @@
-export default function TaskItem({ task, onToggle, onDelete }) {
+export default function TaskItem({ task, onToggle, onDelete, onEdit }) {
   const isDone = task.status === "done";
   const isOverdue = !isDone && task.due_date < new Date().toISOString().slice(0, 10);
 
@@ -14,9 +14,14 @@ export default function TaskItem({ task, onToggle, onDelete }) {
           </div>
         </div>
       </label>
-      <button className="delete-btn" onClick={() => onDelete(task.id)} aria-label="Delete task">
-        ✕
-      </button>
+      <div className="task-item-actions">
+        <button type="button" className="link-btn" onClick={() => onEdit(task)}>
+          Edit
+        </button>
+        <button className="delete-btn" onClick={() => onDelete(task.id)} aria-label="Delete task">
+          ✕
+        </button>
+      </div>
     </li>
   );
 }

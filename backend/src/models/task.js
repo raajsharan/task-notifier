@@ -14,6 +14,12 @@ const Task = sequelize.define(
       allowNull: false,
       defaultValue: "pending",
     },
+    // Independent of `status` — drives the Kanban board view only.
+    stage: {
+      type: DataTypes.ENUM("not_started", "in_progress", "on_hold", "completed"),
+      allowNull: false,
+      defaultValue: "not_started",
+    },
     ownerId: { type: DataTypes.INTEGER, allowNull: false, field: "owner_id" },
   },
   {

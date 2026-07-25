@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import TaskForm from "./components/TaskForm.jsx";
 import TaskList from "./components/TaskList.jsx";
+import KanbanBoard from "./components/KanbanBoard.jsx";
+import TaskEditModal from "./components/TaskEditModal.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import * as api from "./api.js";
@@ -15,6 +17,8 @@ export default function App() {
 
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [view, setView] = useState("board"); // "board" | "kanban"
+  const [editingTask, setEditingTask] = useState(null);
 
   // On load, if a token is already stored, verify it and fetch the user.
   useEffect(() => {
@@ -85,6 +89,16 @@ export default function App() {
     await refreshTasks();
   };
 
+  const handleStageChange = async (task, newStage) => {
+    await api.updateTask(task.id, { stage: newStage });
+    await refreshTasks();
+  };
+
+  const handleSaveEdit = async (id, updates) => {
+    await api.updateTask(id, updates);
+    await refreshTasks();
+  };
+
   if (checkingAuth) {
     return (
       <div className="app auth-loading">
@@ -134,15 +148,33 @@ export default function App() {
       <main>
         <TaskForm onCreate={handleCreate} />
 
+        <div className="view-tabs">
+          <button
+            type="button"
+            className={`view-tab-btn ${view === "board" ? "active" : ""}`}
+            onClick={() => setView("board")}
+          >
+            Board
+          </button>
+          <button
+            type="button"
+            className={`view-tab-btn ${view === "kanban" ? "active" : ""}`}
+            onClick={() => setView("kanban")}
+          >
+            Kanban
+          </button>
+        </div>
+
         {loading ? (
           <p>Loading…</p>
-        ) : (
+        ) : view === "board" ? (
           <div className="task-columns">
             <TaskList
               title={`Today (${today})`}
               tasks={todayTasks}
               onToggle={handleToggle}
               onDelete={handleDelete}
+              onEdit={setEditingTask}
               emptyText="Nothing due today 🎉"
             />
             <TaskList
@@ -150,6 +182,7 @@ export default function App() {
               tasks={pendingTasks}
               onToggle={handleToggle}
               onDelete={handleDelete}
+              onEdit={setEditingTask}
               emptyText="No overdue tasks 👍"
             />
             <TaskList
@@ -157,11 +190,27 @@ export default function App() {
               tasks={upcomingTasks}
               onToggle={handleToggle}
               onDelete={handleDelete}
+              onEdit={setEditingTask}
               emptyText="Nothing scheduled ahead."
             />
           </div>
+        ) : (
+          <KanbanBoard
+            tasks={tasks}
+            onStageChange={handleStageChange}
+            onEdit={setEditingTask}
+            onDelete={handleDelete}
+          />
         )}
       </main>
+
+      {editingTask && (
+        <TaskEditModal
+          task={editingTask}
+          onSave={handleSaveEdit}
+          onClose={() => setEditingTask(null)}
+        />
+      )}
     </div>
   );
 }

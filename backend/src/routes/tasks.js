@@ -7,6 +7,7 @@ const router = express.Router();
 router.use(getCurrentUser);
 
 const VALID_STATUSES = ["pending", "done"];
+const VALID_STAGES = ["not_started", "in_progress", "on_hold", "completed"];
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 router.get(
@@ -18,7 +19,7 @@ router.get(
 );
 
 router.post("/", asyncHandler(async (req, res) => {
-  const { title, description, due_date, status } = req.body || {};
+  const { title, description, due_date, status, stage } = req.body || {};
 
   if (!title || typeof title !== "string") {
     return res.status(422).json({ detail: "title is required" });
@@ -29,6 +30,9 @@ router.post("/", asyncHandler(async (req, res) => {
   if (status && !VALID_STATUSES.includes(status)) {
     return res.status(422).json({ detail: "status must be pending or done" });
   }
+  if (stage && !VALID_STAGES.includes(stage)) {
+    return res.status(422).json({ detail: "stage must be one of: " + VALID_STAGES.join(", ") });
+  }
 
   const task = await crud.createTask(
     {
@@ -36,6 +40,7 @@ router.post("/", asyncHandler(async (req, res) => {
       description: description || "",
       dueDate: due_date,
       status: status || "pending",
+      stage: stage || "not_started",
     },
     req.user.id
   );
@@ -45,13 +50,16 @@ router.post("/", asyncHandler(async (req, res) => {
 router.patch(
   "/:id",
   asyncHandler(async (req, res) => {
-    const { due_date, status } = req.body || {};
+    const { due_date, status, stage } = req.body || {};
 
     if (due_date !== undefined && !DATE_RE.test(due_date)) {
       return res.status(422).json({ detail: "due_date must be a YYYY-MM-DD date" });
     }
     if (status !== undefined && !VALID_STATUSES.includes(status)) {
       return res.status(422).json({ detail: "status must be pending or done" });
+    }
+    if (stage !== undefined && !VALID_STAGES.includes(stage)) {
+      return res.status(422).json({ detail: "stage must be one of: " + VALID_STAGES.join(", ") });
     }
 
     const updated = await crud.updateTask(req.params.id, req.body || {}, req.user.id);
