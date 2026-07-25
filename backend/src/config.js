@@ -10,7 +10,7 @@ const settings = {
   ACCESS_TOKEN_EXPIRE_MINUTES: parseInt(process.env.ACCESS_TOKEN_EXPIRE_MINUTES || "1440", 10),
 
   FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
-  PORT: parseInt(process.env.PORT || "8000", 10),
+  PORT: parseInt(process.env.PORT || "8001", 10),
 };
 
 module.exports = settings;

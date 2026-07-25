@@ -10,7 +10,7 @@
 # It installs PostgreSQL/Nginx/Node.js if missing, creates the app database,
 # installs backend + frontend dependencies, builds the frontend, writes a
 # systemd service for the backend, and configures Nginx to serve the
-# frontend + reverse-proxy /api to the backend on port 8000.
+# frontend + reverse-proxy /api to the backend on port 8001.
 #
 # Re-running it is safe — each step skips work that's already done.
 #
@@ -23,7 +23,7 @@ DB_NAME="${DB_NAME:-tasknotifier}"
 DB_USER="${DB_USER:-taskuser}"
 DB_PASS="${DB_PASS:-taskpass}"
 SERVER_NAME="${SERVER_NAME:-_}"          # nginx server_name; "_" = accept any host/IP
-PORT="${PORT:-8000}"
+PORT="${PORT:-8001}"
 SERVICE_NAME="${SERVICE_NAME:-task-manager-backend}"
 NGINX_SITE="${NGINX_SITE:-task-manager}"
 JWT_SECRET_KEY="${JWT_SECRET_KEY:-$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" 2>/dev/null || openssl rand -hex 32)}"

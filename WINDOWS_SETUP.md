@@ -77,7 +77,7 @@ JWT_SECRET_KEY=<paste the generated value here>
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=1440
 FRONTEND_ORIGIN=http://localhost:5173
-PORT=8000
+PORT=8001
 ```
 
 Run the backend:
@@ -88,7 +88,7 @@ npm run dev
 Leave this PowerShell window open — it's your running server. On first run,
 Sequelize auto-creates the `users` and `tasks` tables in Postgres.
 
-Verify it's up by opening in a browser: http://localhost:8000/api/health
+Verify it's up by opening in a browser: http://localhost:8001/api/health
 → should show `{"status":"ok"}`.
 
 ## 5. Frontend setup
@@ -109,7 +109,7 @@ login/register screen. Register an account, then log in.
 - **Windows Firewall prompt**: the first time `node.exe` binds to a port,
   Windows may show a firewall prompt — allow it on "Private networks" at
   minimum.
-- **Port already in use**: if `8000` or `5173` is taken, set a different
+- **Port already in use**: if `8001` or `5173` is taken, set a different
   `PORT` in `backend/.env` (e.g. `PORT=8001`) and update `FRONTEND_ORIGIN` /
   the frontend's `VITE_API_BASE` accordingly.
 - **`psql` not found**: PATH wasn't updated correctly in step 1, or you

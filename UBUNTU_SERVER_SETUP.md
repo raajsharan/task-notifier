@@ -70,7 +70,7 @@ Set at minimum:
 DATABASE_URL=postgres://taskuser:taskpass@localhost:5432/tasknotifier
 JWT_SECRET_KEY=<generate one — see below>
 FRONTEND_ORIGIN=http://your-server-ip-or-domain
-PORT=8000
+PORT=8001
 ```
 Generate a real secret instead of the placeholder:
 ```bash
@@ -81,7 +81,7 @@ Test it runs:
 ```bash
 node src/server.js
 ```
-Ctrl+C once you see it start cleanly and `curl localhost:8000/api/health`
+Ctrl+C once you see it start cleanly and `curl localhost:8001/api/health`
 returns `{"status":"ok"}`.
 
 Now make it a proper service so it survives reboots and crashes. Create
@@ -158,7 +158,7 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://127.0.0.1:8000/api/;
+        proxy_pass http://127.0.0.1:8001/api/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

@@ -54,7 +54,7 @@ Run it:
 npm run dev
 ```
 On first run, Sequelize auto-creates the `users` and `tasks` tables.
-Check `http://localhost:8000/api/health` → `{"status":"ok"}`.
+Check `http://localhost:8001/api/health` → `{"status":"ok"}`.
 
 ### 3. Frontend
 
