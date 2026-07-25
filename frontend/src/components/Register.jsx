@@ -1,0 +1,81 @@
+import { useState } from "react";
+
+export default function Register({ onRegister, onSwitchToLogin }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (password !== confirm) {
+      setError("Passwords don't match.");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await onRegister(email, password);
+    } catch (err) {
+      const detail = err?.response?.data?.detail;
+      setError(
+        typeof detail === "string"
+          ? detail
+          : "Registration failed. That email may already be in use."
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="auth-card">
+      <h2>Create an account</h2>
+      <form onSubmit={submit}>
+        <div className="field">
+          <label>Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="field">
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+          />
+        </div>
+        <div className="field">
+          <label>Confirm password</label>
+          <input
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            required
+          />
+        </div>
+        {error && <p className="auth-error">{error}</p>}
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Creating account…" : "Register"}
+        </button>
+      </form>
+      <p className="auth-switch">
+        Already have an account?{" "}
+        <button type="button" className="link-btn" onClick={onSwitchToLogin}>
+          Log in
+        </button>
+      </p>
+    </div>
+  );
+}
