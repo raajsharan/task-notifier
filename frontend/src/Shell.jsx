@@ -137,6 +137,9 @@ export default function Shell() {
           <NavLink to="/kanban" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
             Kanban
           </NavLink>
+          <NavLink to="/dashboard" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
+            Dashboard
+          </NavLink>
         </nav>
       </header>
 

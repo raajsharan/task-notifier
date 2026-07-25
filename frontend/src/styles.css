@@ -467,3 +467,183 @@ header h1 {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* --- Dashboard --- */
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .stat-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 500px) {
+  .stat-cards { grid-template-columns: 1fr; }
+}
+
+.stat-card-solid {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+}
+
+.stat-solid-icon {
+  font-size: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-solid-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.stat-solid-label {
+  font-size: 13px;
+  opacity: 0.92;
+  margin-top: 2px;
+}
+
+.dashboard-panels {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-panels { grid-template-columns: 1fr; }
+}
+
+.dashboard-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.dashboard-panel h3 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  color: var(--purple);
+}
+
+.dashboard-note {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* --- Weekly trend chart --- */
+
+.chart-wrap {
+  position: relative;
+}
+
+.viz-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.viz-gridline {
+  stroke: #e1e0d9;
+  stroke-width: 1;
+}
+
+.viz-axis-label {
+  fill: #898781;
+  font-size: 10px;
+}
+
+.viz-bar {
+  fill: #2a78d6;
+  transition: fill 0.1s;
+}
+
+.viz-bar-hover {
+  fill: #184f95;
+}
+
+.viz-tooltip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--text);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.viz-tooltip-sub {
+  font-size: 11px;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+/* --- Stacked bar (part-to-whole) --- */
+
+.stacked-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stacked-bar {
+  display: flex;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.stacked-bar-empty {
+  width: 100%;
+  height: 100%;
+}
+
+.stacked-bar-segment {
+  height: 100%;
+  border-right: 2px solid var(--card);
+}
+
+.stacked-bar-segment:last-child {
+  border-right: none;
+}
+
+.stacked-bar-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
