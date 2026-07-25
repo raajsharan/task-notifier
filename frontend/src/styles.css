@@ -270,6 +270,7 @@ header h1 {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  margin-bottom: 16px;
 }
 
 .logout-btn {
@@ -288,25 +289,29 @@ header h1 {
   color: white;
 }
 
-/* --- View tabs --- */
+/* --- Page navigation --- */
 
-.view-tabs {
+.page-nav {
   display: flex;
   gap: 8px;
-  margin-bottom: 20px;
 }
 
-.view-tab-btn {
+.page-nav-link {
   background: var(--card);
   color: var(--muted);
   border: 1px solid var(--border);
   padding: 8px 16px;
   border-radius: 8px;
-  cursor: pointer;
   font-size: 14px;
+  text-decoration: none;
 }
 
-.view-tab-btn.active {
+.page-nav-link:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+.page-nav-link.active {
   background: var(--purple);
   color: white;
   border-color: var(--purple);
@@ -336,9 +341,16 @@ header h1 {
 
 .kanban-column {
   background: var(--card);
-  border: 1px solid var(--border);
+  border: 2px dashed transparent;
   border-radius: 12px;
   padding: 14px;
+  min-height: 120px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.kanban-column.drag-over {
+  border-color: var(--purple);
+  background: #eeeefb;
 }
 
 .kanban-column h3 {
@@ -372,29 +384,11 @@ header h1 {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px;
+  cursor: grab;
 }
 
-.kanban-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.kanban-move-btn {
-  background: white;
-  border: 1px solid var(--border);
-  color: var(--purple);
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.kanban-move-btn:hover {
-  background: var(--purple);
-  color: white;
-  border-color: var(--purple);
+.kanban-card.dragging {
+  opacity: 0.4;
 }
 
 .kanban-card-footer {

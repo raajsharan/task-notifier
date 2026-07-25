@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const STAGES = [
   { key: "not_started", label: "Not Started" },
   { key: "in_progress", label: "In-Progress" },
@@ -6,46 +8,61 @@ const STAGES = [
 ];
 
 export default function KanbanBoard({ tasks, onStageChange, onEdit, onDelete }) {
+  const [draggingId, setDraggingId] = useState(null);
+  const [dragOverStage, setDragOverStage] = useState(null);
+
+  const handleDrop = (e, stageKey) => {
+    e.preventDefault();
+    setDragOverStage(null);
+    const taskId = Number(e.dataTransfer.getData("text/plain"));
+    const task = tasks.find((t) => t.id === taskId);
+    if (task && (task.stage || "not_started") !== stageKey) {
+      onStageChange(task, stageKey);
+    }
+    setDraggingId(null);
+  };
+
   return (
     <div className="kanban-board">
-      {STAGES.map((stage, i) => {
+      {STAGES.map((stage) => {
         const stageTasks = tasks.filter((t) => (t.stage || "not_started") === stage.key);
+        const isDragOver = dragOverStage === stage.key;
         return (
-          <div className="kanban-column" key={stage.key}>
+          <div
+            className={`kanban-column ${isDragOver ? "drag-over" : ""}`}
+            key={stage.key}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOverStage(stage.key);
+            }}
+            onDragLeave={() => setDragOverStage((s) => (s === stage.key ? null : s))}
+            onDrop={(e) => handleDrop(e, stage.key)}
+          >
             <h3>
               {stage.label} <span className="kanban-count">{stageTasks.length}</span>
             </h3>
             {stageTasks.length === 0 ? (
-              <p className="empty">Nothing here.</p>
+              <p className="empty">Drop a task here.</p>
             ) : (
               <ul className="kanban-cards">
                 {stageTasks.map((task) => (
-                  <li className="kanban-card" key={task.id}>
+                  <li
+                    className={`kanban-card ${draggingId === task.id ? "dragging" : ""}`}
+                    key={task.id}
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData("text/plain", String(task.id));
+                      e.dataTransfer.effectAllowed = "move";
+                      setDraggingId(task.id);
+                    }}
+                    onDragEnd={() => {
+                      setDraggingId(null);
+                      setDragOverStage(null);
+                    }}
+                  >
                     <div className="task-title">{task.title}</div>
                     {task.description && <div className="task-desc">{task.description}</div>}
                     <div className="task-meta">Due {task.due_date}</div>
-                    <div className="kanban-card-actions">
-                      {i > 0 && (
-                        <button
-                          type="button"
-                          className="kanban-move-btn"
-                          onClick={() => onStageChange(task, STAGES[i - 1].key)}
-                          aria-label={`Move to ${STAGES[i - 1].label}`}
-                        >
-                          ← {STAGES[i - 1].label}
-                        </button>
-                      )}
-                      {i < STAGES.length - 1 && (
-                        <button
-                          type="button"
-                          className="kanban-move-btn"
-                          onClick={() => onStageChange(task, STAGES[i + 1].key)}
-                          aria-label={`Move to ${STAGES[i + 1].label}`}
-                        >
-                          {STAGES[i + 1].label} →
-                        </button>
-                      )}
-                    </div>
                     <div className="kanban-card-footer">
                       <button type="button" className="link-btn" onClick={() => onEdit(task)}>
                         Edit
