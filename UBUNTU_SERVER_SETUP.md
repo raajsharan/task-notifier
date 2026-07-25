@@ -45,9 +45,8 @@ since the backend runs on the same box.
 ## 3. Get the project onto the server
 
 ```bash
-cd /opt
-sudo mkdir task-manager && sudo chown $USER:$USER task-manager
-cd task-manager
+sudo mkdir /task_notifier && sudo chown $USER:$USER /task_notifier
+cd /task_notifier
 # copy the project here — e.g. scp the zip up and unzip, or git clone your own repo
 unzip ~/teams-task-notifier.zip -d .
 mv teams-task-notifier/* .
@@ -57,7 +56,7 @@ rmdir teams-task-notifier
 ## 4. Backend: npm install + systemd service
 
 ```bash
-cd /opt/task-manager/backend
+cd /task_notifier/backend
 npm install --omit=dev
 cp .env.example .env
 ```
@@ -99,7 +98,7 @@ After=network.target postgresql.service
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/opt/task-manager/backend
+WorkingDirectory=/task_notifier/backend
 ExecStart=/usr/bin/node src/server.js
 Restart=always
 RestartSec=5
@@ -110,7 +109,7 @@ WantedBy=multi-user.target
 
 Make sure `www-data` can read the project files:
 ```bash
-sudo chown -R www-data:www-data /opt/task-manager
+sudo chown -R www-data:www-data /task_notifier
 ```
 
 Enable and start:
@@ -123,7 +122,7 @@ sudo systemctl status task-manager-backend
 ## 5. Frontend: build static files
 
 ```bash
-cd /opt/task-manager/frontend
+cd /task_notifier/frontend
 npm install
 ```
 
@@ -151,7 +150,7 @@ server {
     listen 80;
     server_name your-server-ip-or-domain;
 
-    root /opt/task-manager/frontend/dist;
+    root /task_notifier/frontend/dist;
     index index.html;
 
     location / {
@@ -204,12 +203,12 @@ It edits the Nginx config automatically and sets up auto-renewal.
 
 ```bash
 # backend
-cd /opt/task-manager/backend
+cd /task_notifier/backend
 npm install --omit=dev   # if dependencies changed
 sudo systemctl restart task-manager-backend
 
 # frontend
-cd /opt/task-manager/frontend
+cd /task_notifier/frontend
 npm install
 npm run build                    # dist/ is served directly by Nginx, no restart needed
 ```
