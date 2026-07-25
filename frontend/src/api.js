@@ -57,6 +57,8 @@ export const deleteTask = (id) => client.delete(`/api/tasks/${id}`).then((r) => 
 
 export const adminListUsers = () => client.get("/api/admin/users").then((r) => r.data);
 
+export const adminGetUser = (userId) => client.get(`/api/admin/users/${userId}`).then((r) => r.data);
+
 export const adminResetPassword = (userId, newPassword) =>
   client
     .post(`/api/admin/users/${userId}/reset-password`, { new_password: newPassword })

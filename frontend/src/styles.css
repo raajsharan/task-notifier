@@ -673,3 +673,7 @@ header h1 {
 .admin-table tr:last-child td {
   border-bottom: none;
 }
+
+.reset-password-page h3 {
+  margin-top: 16px;
+}

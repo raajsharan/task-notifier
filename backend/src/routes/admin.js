@@ -24,6 +24,17 @@ router.get(
   })
 );
 
+router.get(
+  "/users/:id",
+  asyncHandler(async (req, res) => {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).json({ detail: "User not found" });
+    }
+    res.json(serializeUser(user));
+  })
+);
+
 router.post(
   "/users/:id/reset-password",
   asyncHandler(async (req, res) => {
