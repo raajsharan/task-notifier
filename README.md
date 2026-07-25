@@ -6,7 +6,7 @@ A daily task manager with:
 
 ```
 teams-task-notifier/
-├── backend/     FastAPI app (auth + task API, PostgreSQL-backed)
+├── backend/     Express (Node.js) app (auth + task API, PostgreSQL-backed)
 └── frontend/    React (Vite) task manager UI, with login/register screens
 ```
 
@@ -40,22 +40,20 @@ GRANT ALL PRIVILEGES ON DATABASE tasknotifier TO taskuser;
 
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+npm install
 cp .env.example .env
 ```
 
 Edit `.env` — at minimum, set a real `JWT_SECRET_KEY`:
 ```bash
-python3 -c "import secrets; print(secrets.token_hex(32))"
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 Run it:
 ```bash
-uvicorn app.main:app --reload --port 8000
+npm run dev
 ```
-On first run, SQLAlchemy auto-creates the `users` and `tasks` tables.
+On first run, Sequelize auto-creates the `users` and `tasks` tables.
 Check `http://localhost:8000/api/health` → `{"status":"ok"}`.
 
 ### 3. Frontend
@@ -72,7 +70,7 @@ Register an account, then log in to manage tasks.
 
 ## How auth works
 
-- Passwords are hashed with bcrypt (`passlib`) before being stored — never
+- Passwords are hashed with bcrypt (`bcryptjs`) before being stored — never
   in plain text.
 - `/api/auth/register` creates an account, `/api/auth/login` returns a JWT
   access token, `/api/auth/me` returns the current user.

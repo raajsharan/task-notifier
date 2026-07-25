@@ -1,8 +1,9 @@
 # Windows 11 Setup (no Docker)
 
 This walks through running everything natively on Windows 11: PostgreSQL,
-the FastAPI backend, and the React frontend. Commands are given for both
-**PowerShell** (default Windows Terminal) and note where CMD differs.
+the Express (Node.js) backend, and the React frontend. Commands are given
+for both **PowerShell** (default Windows Terminal) and note where CMD
+differs.
 
 ---
 
@@ -48,15 +49,12 @@ This matches the default `DATABASE_URL` in `.env.example` exactly, so the
 backend will connect with no further changes. (Feel free to pick a different
 password — just update `.env` to match in step 4.)
 
-## 3. Install Python and Node.js
+## 3. Install Node.js
 
-- **Python 3.11+**: https://www.python.org/downloads/windows/
-  During install, check **"Add python.exe to PATH"**.
 - **Node.js LTS**: https://nodejs.org/en/download
 
-Verify both in a new PowerShell window:
+Verify in a new PowerShell window:
 ```powershell
-python --version
 node --version
 npm --version
 ```
@@ -65,43 +63,30 @@ npm --version
 
 ```powershell
 cd backend
-python -m venv venv
-venv\Scripts\Activate.ps1
-```
-
-> If PowerShell blocks the activation script with an execution-policy error,
-> run this once (in an admin PowerShell) and try again:
-> ```powershell
-> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-> ```
-> Using **CMD** instead of PowerShell avoids this entirely — activate with
-> `venv\Scripts\activate.bat`.
-
-Install dependencies:
-```powershell
-pip install -r requirements.txt
+npm install
 copy .env.example .env
 ```
 
 Open `.env` in Notepad (or any editor) and fill in a real JWT secret:
 ```powershell
-python -c "import secrets; print(secrets.token_hex(32))"
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 ```
-DATABASE_URL=postgresql+psycopg2://taskuser:taskpass@localhost:5432/tasknotifier
+DATABASE_URL=postgres://taskuser:taskpass@localhost:5432/tasknotifier
 JWT_SECRET_KEY=<paste the generated value here>
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=1440
 FRONTEND_ORIGIN=http://localhost:5173
+PORT=8000
 ```
 
 Run the backend:
 ```powershell
-uvicorn app.main:app --reload --port 8000
+npm run dev
 ```
 
 Leave this PowerShell window open — it's your running server. On first run,
-SQLAlchemy auto-creates the `users` and `tasks` tables in Postgres.
+Sequelize auto-creates the `users` and `tasks` tables in Postgres.
 
 Verify it's up by opening in a browser: http://localhost:8000/api/health
 → should show `{"status":"ok"}`.
@@ -121,12 +106,12 @@ login/register screen. Register an account, then log in.
 
 ## 6. Common Windows gotchas
 
-- **Windows Firewall prompt**: the first time `python.exe` or `node.exe`
-  binds to a port, Windows may show a firewall prompt — allow it on
-  "Private networks" at minimum.
-- **Port already in use**: if `8000` or `5173` is taken, run with a
-  different port, e.g. `uvicorn app.main:app --reload --port 8001` and update
-  `FRONTEND_ORIGIN` in `.env` / the frontend's `VITE_API_BASE` accordingly.
+- **Windows Firewall prompt**: the first time `node.exe` binds to a port,
+  Windows may show a firewall prompt — allow it on "Private networks" at
+  minimum.
+- **Port already in use**: if `8000` or `5173` is taken, set a different
+  `PORT` in `backend/.env` (e.g. `PORT=8001`) and update `FRONTEND_ORIGIN` /
+  the frontend's `VITE_API_BASE` accordingly.
 - **`psql` not found**: PATH wasn't updated correctly in step 1, or you
   didn't open a new terminal window after editing it.
 - **Postgres service not running**: it should auto-start as a Windows

@@ -4,6 +4,7 @@ import TaskList from "./components/TaskList.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import * as api from "./api.js";
+import { notifyDailySummary } from "./dailyNotification.js";
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
@@ -42,6 +43,13 @@ export default function App() {
   useEffect(() => {
     if (user) refreshTasks();
   }, [user, refreshTasks]);
+
+  useEffect(() => {
+    if (!user || loading) return;
+    const today = todayStr();
+    const todayTasks = tasks.filter((t) => t.due_date === today);
+    notifyDailySummary(todayTasks, today);
+  }, [user, loading, tasks]);
 
   const handleLogin = async (email, password) => {
     const { access_token } = await api.login(email, password);

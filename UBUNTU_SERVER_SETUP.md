@@ -1,9 +1,9 @@
 # Ubuntu Server 24.04 Setup
 
-Deploys the app on a plain Ubuntu Server 24.04 box: PostgreSQL, the FastAPI
-backend running as a `systemd` service, and the React frontend built to
-static files and served by Nginx (which also reverse-proxies `/api` to the
-backend). No Docker required.
+Deploys the app on a plain Ubuntu Server 24.04 box: PostgreSQL, the Express
+(Node.js) backend running as a `systemd` service, and the React frontend
+built to static files and served by Nginx (which also reverse-proxies `/api`
+to the backend). No Docker required.
 
 Run everything below over SSH as a user with `sudo` rights.
 
@@ -14,7 +14,7 @@ Run everything below over SSH as a user with `sudo` rights.
 ```bash
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y python3 python3-venv python3-pip postgresql postgresql-contrib nginx git curl
+sudo apt install -y postgresql postgresql-contrib nginx git curl
 ```
 
 Install Node.js 20 LTS (Ubuntu's default apt repo often has an older version):
@@ -54,13 +54,11 @@ mv teams-task-notifier/* .
 rmdir teams-task-notifier
 ```
 
-## 4. Backend: virtualenv + systemd service
+## 4. Backend: npm install + systemd service
 
 ```bash
 cd /opt/task-manager/backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+npm install --omit=dev
 cp .env.example .env
 ```
 
@@ -70,18 +68,19 @@ nano .env
 ```
 Set at minimum:
 ```
-DATABASE_URL=postgresql+psycopg2://taskuser:taskpass@localhost:5432/tasknotifier
+DATABASE_URL=postgres://taskuser:taskpass@localhost:5432/tasknotifier
 JWT_SECRET_KEY=<generate one — see below>
 FRONTEND_ORIGIN=http://your-server-ip-or-domain
+PORT=8000
 ```
 Generate a real secret instead of the placeholder:
 ```bash
-python3 -c "import secrets; print(secrets.token_hex(32))"
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 Test it runs:
 ```bash
-uvicorn app.main:app --host 127.0.0.1 --port 8000
+node src/server.js
 ```
 Ctrl+C once you see it start cleanly and `curl localhost:8000/api/health`
 returns `{"status":"ok"}`.
@@ -94,15 +93,14 @@ sudo nano /etc/systemd/system/task-manager-backend.service
 ```
 ```ini
 [Unit]
-Description=Task Manager FastAPI backend
+Description=Task Manager Express backend
 After=network.target postgresql.service
 
 [Service]
 User=www-data
 Group=www-data
 WorkingDirectory=/opt/task-manager/backend
-Environment="PATH=/opt/task-manager/backend/venv/bin"
-ExecStart=/opt/task-manager/backend/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2
+ExecStart=/usr/bin/node src/server.js
 Restart=always
 RestartSec=5
 
@@ -207,8 +205,7 @@ It edits the Nginx config automatically and sets up auto-renewal.
 ```bash
 # backend
 cd /opt/task-manager/backend
-source venv/bin/activate
-pip install -r requirements.txt   # if dependencies changed
+npm install --omit=dev   # if dependencies changed
 sudo systemctl restart task-manager-backend
 
 # frontend
