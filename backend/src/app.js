@@ -15,4 +15,15 @@ app.use("/api/tasks", taskRoutes);
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 
+app.use((req, res) => {
+  res.status(404).json({ detail: "Not found" });
+});
+
+// Catch-all — keeps error responses JSON instead of Express's default HTML
+// page, so the frontend can always read err.response.data.detail.
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ detail: "Internal server error" });
+});
+
 module.exports = app;

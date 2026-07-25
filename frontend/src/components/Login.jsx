@@ -13,9 +13,13 @@ export default function Login({ onLogin, onSwitchToRegister }) {
     try {
       await onLogin(email, password);
     } catch (err) {
-      setError(
-        err?.response?.data?.detail || "Login failed. Check your email and password."
-      );
+      if (typeof err?.response?.data?.detail === "string") {
+        setError(err.response.data.detail);
+      } else if (!err?.response) {
+        setError("Couldn't reach the server. Check your connection and try again.");
+      } else {
+        setError("Login failed. Check your email and password.");
+      }
     } finally {
       setSubmitting(false);
     }

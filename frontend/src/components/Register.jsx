@@ -23,11 +23,13 @@ export default function Register({ onRegister, onSwitchToLogin }) {
       await onRegister(email, password);
     } catch (err) {
       const detail = err?.response?.data?.detail;
-      setError(
-        typeof detail === "string"
-          ? detail
-          : "Registration failed. That email may already be in use."
-      );
+      if (typeof detail === "string") {
+        setError(detail);
+      } else if (!err?.response) {
+        setError("Couldn't reach the server. Check your connection and try again.");
+      } else {
+        setError(`Registration failed (server returned ${err.response.status}). Please try again.`);
+      }
     } finally {
       setSubmitting(false);
     }
