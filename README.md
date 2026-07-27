@@ -94,6 +94,23 @@ Register an account, then log in to manage tasks.
 | DELETE | `/api/tasks/{id}` | yes | Delete a task |
 | GET | `/api/health` | no | Health check |
 
+## Testing
+
+The backend has a Jest + Supertest suite covering auth, task ownership
+isolation, and admin routes. It runs against a real Postgres database (never
+your dev one) — create it once:
+```sql
+CREATE DATABASE tasknotifier_test OWNER taskuser;
+```
+Then:
+```bash
+cd backend
+npm test
+```
+Set `TEST_DATABASE_URL` to point elsewhere (e.g. in CI). GitHub Actions
+(`.github/workflows/ci.yml`) runs this suite plus a frontend build check on
+every push/PR to `main`.
+
 ## Notes / next steps
 
 - **Password reset / email verification**: not included — add an email

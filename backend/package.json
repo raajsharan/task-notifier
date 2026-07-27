@@ -11,7 +11,8 @@
     "pm2:stop": "pm2 stop task-manager-api",
     "pm2:restart": "pm2 restart task-manager-api",
     "pm2:logs": "pm2 logs task-manager-api",
-    "make-admin": "node scripts/make-admin.js"
+    "make-admin": "node scripts/make-admin.js",
+    "test": "jest"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -24,6 +25,8 @@
     "sequelize": "^6.37.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.2.2"
   }
 }

@@ -1,5 +1,6 @@
 const express = require("express");
 const rateLimit = require("express-rate-limit");
+const settings = require("../config");
 const User = require("../models/user");
 const {
   hashPassword,
@@ -19,7 +20,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // per-IP limit than the rest of the API.
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 20,
+  limit: settings.AUTH_RATE_LIMIT,
   standardHeaders: true,
   legacyHeaders: false,
   message: { detail: "Too many attempts. Please try again later." },
