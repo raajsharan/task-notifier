@@ -55,7 +55,7 @@ export default function ForgotPassword({ onSwitchToLogin }) {
       <div className="auth-card">
         <h2>Password reset</h2>
         <p>Your password has been reset. You can now log in with your new password.</p>
-        <button type="button" onClick={onSwitchToLogin}>
+        <button type="button" className="btn-primary" onClick={onSwitchToLogin}>
           Back to log in
         </button>
       </div>
@@ -68,12 +68,19 @@ export default function ForgotPassword({ onSwitchToLogin }) {
         <h2>Forgot password</h2>
         <form onSubmit={submitAnswer}>
           <div className="field">
-            <label>{question}</label>
-            <input value={answer} onChange={(e) => setAnswer(e.target.value)} required autoFocus />
+            <label htmlFor="forgot-answer">{question}</label>
+            <input
+              id="forgot-answer"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              required
+              autoFocus
+            />
           </div>
           <div className="field">
-            <label>New password</label>
+            <label htmlFor="forgot-new-password">New password</label>
             <input
+              id="forgot-new-password"
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
@@ -82,8 +89,9 @@ export default function ForgotPassword({ onSwitchToLogin }) {
             />
           </div>
           <div className="field">
-            <label>Confirm new password</label>
+            <label htmlFor="forgot-confirm-password">Confirm new password</label>
             <input
+              id="forgot-confirm-password"
               type="password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
@@ -109,8 +117,15 @@ export default function ForgotPassword({ onSwitchToLogin }) {
       <h2>Forgot password</h2>
       <form onSubmit={submitEmail}>
         <div className="field">
-          <label>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
+          <label htmlFor="forgot-email">Email</label>
+          <input
+            id="forgot-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoFocus
+          />
         </div>
         {error && <p className="auth-error">{error}</p>}
         <button type="submit" disabled={submitting}>

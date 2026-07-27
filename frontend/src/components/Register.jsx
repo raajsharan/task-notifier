@@ -46,8 +46,9 @@ export default function Register({ onRegister, onSwitchToLogin }) {
       <h2>Create an account</h2>
       <form onSubmit={submit}>
         <div className="field">
-          <label>Email</label>
+          <label htmlFor="register-email">Email</label>
           <input
+            id="register-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -55,8 +56,9 @@ export default function Register({ onRegister, onSwitchToLogin }) {
           />
         </div>
         <div className="field">
-          <label>Password</label>
+          <label htmlFor="register-password">Password</label>
           <input
+            id="register-password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -65,8 +67,9 @@ export default function Register({ onRegister, onSwitchToLogin }) {
           />
         </div>
         <div className="field">
-          <label>Confirm password</label>
+          <label htmlFor="register-confirm">Confirm password</label>
           <input
+            id="register-confirm"
             type="password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
@@ -74,8 +77,9 @@ export default function Register({ onRegister, onSwitchToLogin }) {
           />
         </div>
         <div className="field">
-          <label>Security question</label>
+          <label htmlFor="register-security-question">Security question</label>
           <input
+            id="register-security-question"
             value={securityQuestion}
             onChange={(e) => setSecurityQuestion(e.target.value)}
             placeholder="e.g. What was your first pet's name?"
@@ -83,8 +87,9 @@ export default function Register({ onRegister, onSwitchToLogin }) {
           />
         </div>
         <div className="field">
-          <label>Answer</label>
+          <label htmlFor="register-security-answer">Answer</label>
           <input
+            id="register-security-answer"
             value={securityAnswer}
             onChange={(e) => setSecurityAnswer(e.target.value)}
             placeholder="Used to reset your password if you forget it"

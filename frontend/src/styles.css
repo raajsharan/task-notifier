@@ -1,20 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
 :root {
   --purple: #464775;
+  --purple-dark: #33345a;
   --bg: #f5f6fb;
   --card: #ffffff;
   --border: #e1e3ec;
   --text: #22223b;
   --muted: #6b7280;
   --danger: #d64545;
+
+  /* Spacing scale — every gap/padding in the app draws from these so
+     rhythm stays consistent instead of ad-hoc pixel values per component. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 }
 
 * { box-sizing: border-box; }
 
+/* Every form in the app gets the same field rhythm automatically — one
+   rule instead of repeating gap/flex per container (task form, modals,
+   auth cards, admin pages, ...). */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
 body {
   margin: 0;
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
+  line-height: 1.5;
+}
+
+/* A single, visible focus ring everywhere — replaces the browser default
+   so it matches the brand color but is never suppressed or inconsistent. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
 }
 
 .app {
@@ -68,9 +107,9 @@ header h1 {
 .task-form {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
   max-width: 480px;
 }
 
@@ -85,38 +124,56 @@ header h1 {
 }
 
 .task-form h2 {
-  margin-top: 0;
+  margin: 0 0 var(--space-1);
   font-size: 18px;
+  font-weight: 700;
 }
 
 .field {
-  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .field label {
   font-size: 13px;
+  font-weight: 500;
   color: var(--muted);
 }
 
 .field input,
-.field textarea {
-  padding: 8px 10px;
+.field textarea,
+.field select {
+  padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-family: inherit;
+  background: var(--card);
+  color: var(--text);
+  transition: border-color 150ms ease;
+}
+
+.field input:hover,
+.field textarea:hover,
+.field select:hover {
+  border-color: var(--purple);
 }
 
 .task-form button {
   background: var(--purple);
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.task-form button:hover {
+  background: var(--purple-dark);
 }
 
 .task-columns {
@@ -281,26 +338,33 @@ header h1 {
 .auth-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 28px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
   text-align: left;
 }
 
 .auth-card h2 {
-  margin-top: 0;
+  margin: 0 0 var(--space-5);
   color: var(--purple);
 }
 
-.auth-card button[type="submit"] {
+.auth-card button[type="submit"],
+.auth-card .btn-primary {
   width: 100%;
   background: var(--purple);
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 14px;
-  margin-top: 4px;
+  font-weight: 600;
+  transition: background-color 150ms ease;
+}
+
+.auth-card button[type="submit"]:hover,
+.auth-card .btn-primary:hover {
+  background: var(--purple-dark);
 }
 
 .auth-card button[type="submit"]:disabled {
@@ -481,8 +545,8 @@ header h1 {
 
 .modal {
   background: var(--card);
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
   width: 100%;
   max-width: 440px;
   max-height: 90vh;
@@ -490,43 +554,47 @@ header h1 {
 }
 
 .modal h2 {
-  margin-top: 0;
+  margin: 0 0 var(--space-5);
   color: var(--purple);
   font-size: 18px;
-}
-
-.modal select {
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 14px;
-  font-family: inherit;
-  background: white;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 16px;
+  gap: var(--space-2);
 }
 
 .modal-cancel-btn {
-  background: white;
+  background: var(--card);
   color: var(--muted);
   border: 1px solid var(--border);
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 14px;
   cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.modal-cancel-btn:hover {
+  border-color: var(--purple);
+  color: var(--purple);
 }
 
 .modal-actions button[type="submit"] {
   background: var(--purple);
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.modal-actions button[type="submit"]:hover {
+  background: var(--purple-dark);
 }
 
 .modal-actions button[type="submit"]:disabled {

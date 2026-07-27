@@ -35,8 +35,9 @@ export default function TaskForm({ onCreate }) {
     <form className="task-form" onSubmit={submit}>
       <h2>Add Task</h2>
       <div className="field">
-        <label>Title</label>
+        <label htmlFor="new-task-title">Title</label>
         <input
+          id="new-task-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. Prepare client deck"
@@ -44,8 +45,9 @@ export default function TaskForm({ onCreate }) {
         />
       </div>
       <div className="field">
-        <label>Description</label>
+        <label htmlFor="new-task-description">Description</label>
         <textarea
+          id="new-task-description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Optional details"
@@ -53,28 +55,39 @@ export default function TaskForm({ onCreate }) {
         />
       </div>
       <div className="field">
-        <label>Due date</label>
-        <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />
+        <label htmlFor="new-task-due-date">Due date</label>
+        <input
+          id="new-task-due-date"
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          required
+        />
       </div>
       <div className="field">
-        <label>Priority</label>
-        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+        <label htmlFor="new-task-priority">Priority</label>
+        <select id="new-task-priority" value={priority} onChange={(e) => setPriority(e.target.value)}>
           <option value="low">Low</option>
           <option value="medium">Medium</option>
           <option value="high">High</option>
         </select>
       </div>
       <div className="field">
-        <label>Tags</label>
+        <label htmlFor="new-task-tags">Tags</label>
         <input
+          id="new-task-tags"
           value={tagsInput}
           onChange={(e) => setTagsInput(e.target.value)}
           placeholder="Comma-separated, e.g. work, urgent"
         />
       </div>
       <div className="field">
-        <label>Repeats</label>
-        <select value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+        <label htmlFor="new-task-recurrence">Repeats</label>
+        <select
+          id="new-task-recurrence"
+          value={recurrence}
+          onChange={(e) => setRecurrence(e.target.value)}
+        >
           <option value="none">Doesn't repeat</option>
           <option value="daily">Daily</option>
           <option value="weekly">Weekly</option>
