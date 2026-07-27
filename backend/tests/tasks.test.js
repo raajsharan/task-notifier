@@ -49,6 +49,8 @@ describe("POST /api/tasks", () => {
       due_date: "2026-08-01",
       status: "pending",
       stage: "not_started",
+      priority: "medium",
+      tags: [],
     });
   });
 
@@ -73,6 +75,49 @@ describe("POST /api/tasks", () => {
       .post("/api/tasks")
       .set("Authorization", `Bearer ${tokenA}`)
       .send({ title: "Bad status", due_date: "2026-08-01", status: "whatever" });
+    expect(res.status).toBe(422);
+  });
+
+  it("rejects an invalid priority", async () => {
+    const res = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ title: "Bad priority", due_date: "2026-08-01", priority: "urgent" });
+    expect(res.status).toBe(422);
+  });
+
+  it("accepts a valid priority and tags, trimming/deduping tags", async () => {
+    const res = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({
+        title: "Prioritized task",
+        due_date: "2026-08-01",
+        priority: "high",
+        tags: [" work ", "urgent", "work", ""],
+      });
+    expect(res.status).toBe(201);
+    expect(res.body.priority).toBe("high");
+    expect(res.body.tags).toEqual(["work", "urgent"]);
+  });
+
+  it("rejects tags that aren't an array of strings", async () => {
+    const res = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ title: "Bad tags", due_date: "2026-08-01", tags: "not-an-array" });
+    expect(res.status).toBe(422);
+  });
+
+  it("rejects more than 10 tags", async () => {
+    const res = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({
+        title: "Too many tags",
+        due_date: "2026-08-01",
+        tags: Array.from({ length: 11 }, (_, i) => `tag${i}`),
+      });
     expect(res.status).toBe(422);
   });
 });
@@ -134,6 +179,24 @@ describe("PATCH /api/tasks/:id", () => {
       .patch(`/api/tasks/${taskId}`)
       .set("Authorization", `Bearer ${tokenA}`)
       .send({ stage: "bogus" });
+    expect(res.status).toBe(422);
+  });
+
+  it("updates priority and tags", async () => {
+    const res = await request(app)
+      .patch(`/api/tasks/${taskId}`)
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ priority: "low", tags: ["review", "later"] });
+    expect(res.status).toBe(200);
+    expect(res.body.priority).toBe("low");
+    expect(res.body.tags).toEqual(["review", "later"]);
+  });
+
+  it("rejects an invalid priority on update", async () => {
+    const res = await request(app)
+      .patch(`/api/tasks/${taskId}`)
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ priority: "urgent" });
     expect(res.status).toBe(422);
   });
 });

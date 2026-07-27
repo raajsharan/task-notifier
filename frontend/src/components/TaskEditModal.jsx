@@ -6,6 +6,8 @@ export default function TaskEditModal({ task, onSave, onClose }) {
   const [dueDate, setDueDate] = useState(task.due_date);
   const [status, setStatus] = useState(task.status);
   const [stage, setStage] = useState(task.stage || "not_started");
+  const [priority, setPriority] = useState(task.priority || "medium");
+  const [tagsInput, setTagsInput] = useState((task.tags || []).join(", "));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -15,12 +17,18 @@ export default function TaskEditModal({ task, onSave, onClose }) {
     setSaving(true);
     setError("");
     try {
+      const tags = tagsInput
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
       await onSave(task.id, {
         title,
         description,
         due_date: dueDate,
         status,
         stage,
+        priority,
+        tags,
       });
       onClose();
     } catch (err) {
@@ -71,6 +79,22 @@ export default function TaskEditModal({ task, onSave, onClose }) {
               <option value="on_hold">On-Hold</option>
               <option value="completed">Completed</option>
             </select>
+          </div>
+          <div className="field">
+            <label>Priority</label>
+            <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div className="field">
+            <label>Tags</label>
+            <input
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              placeholder="Comma-separated, e.g. work, urgent"
+            />
           </div>
           {error && <p className="auth-error">{error}</p>}
           <div className="modal-actions">

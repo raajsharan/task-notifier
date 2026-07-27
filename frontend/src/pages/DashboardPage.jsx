@@ -76,6 +76,15 @@ export default function DashboardPage() {
     color: STAGE_COLORS[key],
   }));
 
+  // Reuses colors already meaningful elsewhere in the app: gray = low
+  // urgency (same as "Pending" above), red = high urgency (same as the
+  // overdue badge on task cards).
+  const priorityCounts = [
+    { label: "Low", value: tasks.filter((t) => (t.priority || "medium") === "low").length, color: "#c3c2b7" },
+    { label: "Medium", value: tasks.filter((t) => (t.priority || "medium") === "medium").length, color: "#2a78d6" },
+    { label: "High", value: tasks.filter((t) => (t.priority || "medium") === "high").length, color: "#d64545" },
+  ];
+
   return (
     <div className="dashboard">
       <div className="stat-cards">
@@ -126,9 +135,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="dashboard-panel">
-        <h3>Kanban stage breakdown</h3>
-        <StackedBar segments={stageCounts} />
+      <div className="dashboard-panels">
+        <div className="dashboard-panel">
+          <h3>Kanban stage breakdown</h3>
+          <StackedBar segments={stageCounts} />
+        </div>
+
+        <div className="dashboard-panel">
+          <h3>Priority breakdown</h3>
+          <StackedBar segments={priorityCounts} />
+        </div>
       </div>
 
       <p className="dashboard-note">

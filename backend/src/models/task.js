@@ -20,6 +20,16 @@ const Task = sequelize.define(
       allowNull: false,
       defaultValue: "not_started",
     },
+    priority: {
+      type: DataTypes.ENUM("low", "medium", "high"),
+      allowNull: false,
+      defaultValue: "medium",
+    },
+    tags: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      defaultValue: [],
+    },
     ownerId: { type: DataTypes.INTEGER, allowNull: false, field: "owner_id" },
   },
   {

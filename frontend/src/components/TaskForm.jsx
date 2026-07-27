@@ -4,13 +4,28 @@ export default function TaskForm({ onCreate }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [priority, setPriority] = useState("medium");
+  const [tagsInput, setTagsInput] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
     if (!title.trim()) return;
-    await onCreate({ title, description, due_date: dueDate, status: "pending" });
+    const tags = tagsInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    await onCreate({
+      title,
+      description,
+      due_date: dueDate,
+      status: "pending",
+      priority,
+      tags,
+    });
     setTitle("");
     setDescription("");
+    setPriority("medium");
+    setTagsInput("");
   };
 
   return (
@@ -37,6 +52,22 @@ export default function TaskForm({ onCreate }) {
       <div className="field">
         <label>Due date</label>
         <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />
+      </div>
+      <div className="field">
+        <label>Priority</label>
+        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+      <div className="field">
+        <label>Tags</label>
+        <input
+          value={tagsInput}
+          onChange={(e) => setTagsInput(e.target.value)}
+          placeholder="Comma-separated, e.g. work, urgent"
+        />
       </div>
       <button type="submit">Add Task</button>
     </form>

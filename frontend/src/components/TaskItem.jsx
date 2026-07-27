@@ -7,11 +7,22 @@ export default function TaskItem({ task, onToggle, onDelete, onEdit }) {
       <label className="task-check">
         <input type="checkbox" checked={isDone} onChange={() => onToggle(task)} />
         <div>
-          <div className="task-title">{task.title}</div>
+          <div className="task-title">
+            {task.title} <span className={`priority-badge priority-${task.priority}`}>{task.priority}</span>
+          </div>
           {task.description && <div className="task-desc">{task.description}</div>}
           <div className="task-meta">
             Due {task.due_date} {isOverdue && <span className="badge">Overdue</span>}
           </div>
+          {task.tags?.length > 0 && (
+            <div className="task-tags">
+              {task.tags.map((tag) => (
+                <span className="tag-chip" key={tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </label>
       <div className="task-item-actions">

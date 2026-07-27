@@ -178,6 +178,47 @@ header h1 {
   margin-left: 6px;
 }
 
+.priority-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.priority-badge.priority-low {
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.priority-badge.priority-medium {
+  background: #e3edfb;
+  color: #184f95;
+}
+
+.priority-badge.priority-high {
+  background: #fbe3e3;
+  color: var(--danger);
+}
+
+.task-tags {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag-chip {
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
 .delete-btn {
   background: none;
   border: none;

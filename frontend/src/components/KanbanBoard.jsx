@@ -60,9 +60,20 @@ export default function KanbanBoard({ tasks, onStageChange, onEdit, onDelete }) 
                       setDragOverStage(null);
                     }}
                   >
-                    <div className="task-title">{task.title}</div>
+                    <div className="task-title">
+                      {task.title} <span className={`priority-badge priority-${task.priority}`}>{task.priority}</span>
+                    </div>
                     {task.description && <div className="task-desc">{task.description}</div>}
                     <div className="task-meta">Due {task.due_date}</div>
+                    {task.tags?.length > 0 && (
+                      <div className="task-tags">
+                        {task.tags.map((tag) => (
+                          <span className="tag-chip" key={tag}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <div className="kanban-card-footer">
                       <button type="button" className="link-btn" onClick={() => onEdit(task)}>
                         Edit
