@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Login({ onLogin, onSwitchToRegister }) {
+export default function Login({ onLogin, onSwitchToRegister, onSwitchToForgotPassword }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -52,6 +52,11 @@ export default function Login({ onLogin, onSwitchToRegister }) {
           {submitting ? "Logging in…" : "Log in"}
         </button>
       </form>
+      <p className="auth-switch">
+        <button type="button" className="link-btn" onClick={onSwitchToForgotPassword}>
+          Forgot password?
+        </button>
+      </p>
       <p className="auth-switch">
         No account yet?{" "}
         <button type="button" className="link-btn" onClick={onSwitchToRegister}>

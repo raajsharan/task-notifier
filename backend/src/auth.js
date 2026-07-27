@@ -11,6 +11,20 @@ async function verifyPassword(password, hashedPassword) {
   return bcrypt.compare(password, hashedPassword);
 }
 
+// Security-question answers are normalized (trimmed + lowercased) before
+// hashing so "Blue", "blue ", and "BLUE" all match the same stored answer.
+function normalizeAnswer(answer) {
+  return answer.trim().toLowerCase();
+}
+
+async function hashAnswer(answer) {
+  return bcrypt.hash(normalizeAnswer(answer), 10);
+}
+
+async function verifyAnswer(answer, answerHash) {
+  return bcrypt.compare(normalizeAnswer(answer), answerHash);
+}
+
 function createAccessToken(subjectEmail, expiresMinutes) {
   const minutes = expiresMinutes || settings.ACCESS_TOKEN_EXPIRE_MINUTES;
   return jwt.sign({ sub: subjectEmail }, settings.JWT_SECRET_KEY, {
@@ -65,6 +79,8 @@ function requireAdmin(req, res, next) {
 module.exports = {
   hashPassword,
   verifyPassword,
+  hashAnswer,
+  verifyAnswer,
   createAccessToken,
   authenticateUser,
   getCurrentUser,

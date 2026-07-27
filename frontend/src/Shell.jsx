@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
+import ForgotPassword from "./components/ForgotPassword.jsx";
 import * as api from "./api.js";
 import { notifyDailySummary } from "./dailyNotification.js";
 
@@ -10,7 +11,7 @@ const todayStr = () => new Date().toISOString().slice(0, 10);
 export default function Shell() {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [user, setUser] = useState(null);
-  const [authView, setAuthView] = useState("login"); // "login" | "register"
+  const [authView, setAuthView] = useState("login"); // "login" | "register" | "forgot"
 
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -57,8 +58,8 @@ export default function Shell() {
     setUser(me);
   };
 
-  const handleRegister = async (email, password) => {
-    await api.register(email, password);
+  const handleRegister = async (email, password, securityQuestion, securityAnswer) => {
+    await api.register(email, password, securityQuestion, securityAnswer);
     await handleLogin(email, password);
   };
 
@@ -109,11 +110,17 @@ export default function Shell() {
           <h1>📋 Task Manager</h1>
           <p className="subtitle">Log in to manage your tasks.</p>
         </header>
-        {authView === "login" ? (
-          <Login onLogin={handleLogin} onSwitchToRegister={() => setAuthView("register")} />
-        ) : (
+        {authView === "login" && (
+          <Login
+            onLogin={handleLogin}
+            onSwitchToRegister={() => setAuthView("register")}
+            onSwitchToForgotPassword={() => setAuthView("forgot")}
+          />
+        )}
+        {authView === "register" && (
           <Register onRegister={handleRegister} onSwitchToLogin={() => setAuthView("login")} />
         )}
+        {authView === "forgot" && <ForgotPassword onSwitchToLogin={() => setAuthView("login")} />}
       </div>
     );
   }

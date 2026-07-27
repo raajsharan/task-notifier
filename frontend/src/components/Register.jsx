@@ -4,6 +4,8 @@ export default function Register({ onRegister, onSwitchToLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [securityQuestion, setSecurityQuestion] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -18,9 +20,13 @@ export default function Register({ onRegister, onSwitchToLogin }) {
       setError("Password must be at least 8 characters long.");
       return;
     }
+    if (!securityQuestion.trim() || !securityAnswer.trim()) {
+      setError("A security question and answer are required — they're used to reset your password if you forget it.");
+      return;
+    }
     setSubmitting(true);
     try {
-      await onRegister(email, password);
+      await onRegister(email, password, securityQuestion, securityAnswer);
     } catch (err) {
       const detail = err?.response?.data?.detail;
       if (typeof detail === "string") {
@@ -64,6 +70,24 @@ export default function Register({ onRegister, onSwitchToLogin }) {
             type="password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
+            required
+          />
+        </div>
+        <div className="field">
+          <label>Security question</label>
+          <input
+            value={securityQuestion}
+            onChange={(e) => setSecurityQuestion(e.target.value)}
+            placeholder="e.g. What was your first pet's name?"
+            required
+          />
+        </div>
+        <div className="field">
+          <label>Answer</label>
+          <input
+            value={securityAnswer}
+            onChange={(e) => setSecurityAnswer(e.target.value)}
+            placeholder="Used to reset your password if you forget it"
             required
           />
         </div>

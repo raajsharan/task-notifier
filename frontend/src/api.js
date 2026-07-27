@@ -24,8 +24,15 @@ client.interceptors.request.use((config) => {
 
 // ---------- Auth ----------
 
-export const register = (email, password) =>
-  client.post("/api/auth/register", { email, password }).then((r) => r.data);
+export const register = (email, password, securityQuestion, securityAnswer) =>
+  client
+    .post("/api/auth/register", {
+      email,
+      password,
+      security_question: securityQuestion,
+      security_answer: securityAnswer,
+    })
+    .then((r) => r.data);
 
 export const login = (email, password) => {
   // FastAPI's OAuth2PasswordRequestForm expects form-encoded data with a
@@ -41,6 +48,14 @@ export const login = (email, password) => {
 };
 
 export const getMe = () => client.get("/api/auth/me").then((r) => r.data);
+
+export const getSecurityQuestion = (email) =>
+  client.get("/api/auth/security-question", { params: { email } }).then((r) => r.data);
+
+export const selfResetPassword = (email, answer, newPassword) =>
+  client
+    .post("/api/auth/reset-password", { email, answer, new_password: newPassword })
+    .then((r) => r.data);
 
 // ---------- Tasks ----------
 
