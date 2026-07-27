@@ -18,38 +18,40 @@ export default function BoardPage() {
 
   return (
     <>
-      <TaskForm onCreate={handleCreate} />
+      <div className="board-layout">
+        <TaskForm onCreate={handleCreate} />
 
-      {loading ? (
-        <p>Loading…</p>
-      ) : (
-        <div className="task-columns">
-          <TaskList
-            title={`Today (${today})`}
-            tasks={todayTasks}
-            onToggle={handleToggle}
-            onDelete={handleDelete}
-            onEdit={setEditingTask}
-            emptyText="Nothing due today 🎉"
-          />
-          <TaskList
-            title="Pending / Overdue"
-            tasks={pendingTasks}
-            onToggle={handleToggle}
-            onDelete={handleDelete}
-            onEdit={setEditingTask}
-            emptyText="No overdue tasks 👍"
-          />
-          <TaskList
-            title="Upcoming"
-            tasks={upcomingTasks}
-            onToggle={handleToggle}
-            onDelete={handleDelete}
-            onEdit={setEditingTask}
-            emptyText="Nothing scheduled ahead."
-          />
-        </div>
-      )}
+        {loading ? (
+          <p>Loading…</p>
+        ) : (
+          <div className="task-columns">
+            <TaskList
+              title={`Today (${today})`}
+              tasks={todayTasks}
+              onToggle={handleToggle}
+              onDelete={handleDelete}
+              onEdit={setEditingTask}
+              emptyText="Nothing due today 🎉"
+            />
+            <TaskList
+              title="Pending / Overdue"
+              tasks={pendingTasks}
+              onToggle={handleToggle}
+              onDelete={handleDelete}
+              onEdit={setEditingTask}
+              emptyText="No overdue tasks 👍"
+            />
+            <TaskList
+              title="Upcoming"
+              tasks={upcomingTasks}
+              onToggle={handleToggle}
+              onDelete={handleDelete}
+              onEdit={setEditingTask}
+              emptyText="Nothing scheduled ahead."
+            />
+          </div>
+        )}
+      </div>
 
       {editingTask && (
         <TaskEditModal
