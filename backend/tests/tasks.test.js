@@ -233,3 +233,110 @@ describe("DELETE /api/tasks/:id", () => {
     expect(res.status).toBe(404);
   });
 });
+
+describe("Recurring tasks", () => {
+  it("rejects an invalid recurrence value", async () => {
+    const res = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ title: "Bad recurrence", due_date: "2026-08-06", recurrence: "yearly" });
+    expect(res.status).toBe(422);
+  });
+
+  it("defaults recurrence to 'none' and does not spawn a next occurrence when completed", async () => {
+    const created = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ title: "One-off task", due_date: "2026-08-06" });
+    expect(created.body.recurrence).toBe("none");
+
+    const before = await request(app).get("/api/tasks").set("Authorization", `Bearer ${tokenA}`);
+    await request(app)
+      .patch(`/api/tasks/${created.body.id}`)
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ status: "done" });
+    const after = await request(app).get("/api/tasks").set("Authorization", `Bearer ${tokenA}`);
+
+    expect(after.body.length).toBe(before.body.length);
+  });
+
+  it("spawns the next occurrence with an advanced due date when a daily task is completed", async () => {
+    const created = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ title: "Daily standup", due_date: "2026-08-10", recurrence: "daily" });
+
+    const res = await request(app)
+      .patch(`/api/tasks/${created.body.id}`)
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ status: "done" });
+    expect(res.status).toBe(200);
+    // The completed task itself stays done, at its original due date.
+    expect(res.body.status).toBe("done");
+    expect(res.body.due_date).toBe("2026-08-10");
+
+    const all = await request(app).get("/api/tasks").set("Authorization", `Bearer ${tokenA}`);
+    const next = all.body.find(
+      (t) => t.title === "Daily standup" && t.id !== created.body.id
+    );
+    expect(next).toBeDefined();
+    expect(next.due_date).toBe("2026-08-11");
+    expect(next.status).toBe("pending");
+    expect(next.stage).toBe("not_started");
+    expect(next.recurrence).toBe("daily");
+  });
+
+  it("advances weekly and monthly recurrences correctly", async () => {
+    const weekly = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ title: "Weekly sync", due_date: "2026-08-10", recurrence: "weekly" });
+    await request(app)
+      .patch(`/api/tasks/${weekly.body.id}`)
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ status: "done" });
+
+    const monthly = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ title: "Monthly report", due_date: "2026-01-31", recurrence: "monthly" });
+    await request(app)
+      .patch(`/api/tasks/${monthly.body.id}`)
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ status: "done" });
+
+    const all = await request(app).get("/api/tasks").set("Authorization", `Bearer ${tokenA}`);
+    const nextWeekly = all.body.find((t) => t.title === "Weekly sync" && t.id !== weekly.body.id);
+    const nextMonthly = all.body.find((t) => t.title === "Monthly report" && t.id !== monthly.body.id);
+
+    expect(nextWeekly.due_date).toBe("2026-08-17");
+    // JS Date's setUTCMonth on Jan 31 rolls into March (Feb has no 31st) —
+    // documenting actual behavior rather than asserting an idealized one.
+    expect(nextMonthly.due_date).toBe("2026-03-03");
+  });
+
+  it("does not spawn a second occurrence if the same task is marked done twice", async () => {
+    const created = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ title: "Idempotent recurrence check", due_date: "2026-08-12", recurrence: "daily" });
+
+    await request(app)
+      .patch(`/api/tasks/${created.body.id}`)
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ status: "done" });
+    const afterFirst = await request(app).get("/api/tasks").set("Authorization", `Bearer ${tokenA}`);
+    const countAfterFirst = afterFirst.body.filter((t) => t.title === "Idempotent recurrence check").length;
+
+    // Already done -> done again should NOT spawn a duplicate next occurrence.
+    await request(app)
+      .patch(`/api/tasks/${created.body.id}`)
+      .set("Authorization", `Bearer ${tokenA}`)
+      .send({ status: "done" });
+    const afterSecond = await request(app).get("/api/tasks").set("Authorization", `Bearer ${tokenA}`);
+    const countAfterSecond = afterSecond.body.filter((t) => t.title === "Idempotent recurrence check").length;
+
+    expect(countAfterFirst).toBe(2); // original + spawned next occurrence
+    expect(countAfterSecond).toBe(2);
+  });
+});

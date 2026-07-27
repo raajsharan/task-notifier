@@ -30,6 +30,14 @@ const Task = sequelize.define(
       allowNull: false,
       defaultValue: [],
     },
+    // On completion (status -> done), a task with recurrence !== "none"
+    // spawns its next occurrence (see crud.updateTask) instead of relying
+    // on a background scheduler pre-generating future instances.
+    recurrence: {
+      type: DataTypes.ENUM("none", "daily", "weekly", "monthly"),
+      allowNull: false,
+      defaultValue: "none",
+    },
     ownerId: { type: DataTypes.INTEGER, allowNull: false, field: "owner_id" },
   },
   {

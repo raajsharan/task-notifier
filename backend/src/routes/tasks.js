@@ -9,6 +9,7 @@ router.use(getCurrentUser);
 const VALID_STATUSES = ["pending", "done"];
 const VALID_STAGES = ["not_started", "in_progress", "on_hold", "completed"];
 const VALID_PRIORITIES = ["low", "medium", "high"];
+const VALID_RECURRENCES = ["none", "daily", "weekly", "monthly"];
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_TAGS = 10;
 const MAX_TAG_LENGTH = 30;
@@ -44,7 +45,7 @@ router.get(
 );
 
 router.post("/", asyncHandler(async (req, res) => {
-  const { title, description, due_date, status, stage, priority, tags } = req.body || {};
+  const { title, description, due_date, status, stage, priority, tags, recurrence } = req.body || {};
 
   if (!title || typeof title !== "string") {
     return res.status(422).json({ detail: "title is required" });
@@ -60,6 +61,9 @@ router.post("/", asyncHandler(async (req, res) => {
   }
   if (priority && !VALID_PRIORITIES.includes(priority)) {
     return res.status(422).json({ detail: "priority must be one of: " + VALID_PRIORITIES.join(", ") });
+  }
+  if (recurrence && !VALID_RECURRENCES.includes(recurrence)) {
+    return res.status(422).json({ detail: "recurrence must be one of: " + VALID_RECURRENCES.join(", ") });
   }
 
   let cleanTags = [];
@@ -80,6 +84,7 @@ router.post("/", asyncHandler(async (req, res) => {
       stage: stage || "not_started",
       priority: priority || "medium",
       tags: cleanTags,
+      recurrence: recurrence || "none",
     },
     req.user.id
   );
@@ -89,7 +94,7 @@ router.post("/", asyncHandler(async (req, res) => {
 router.patch(
   "/:id",
   asyncHandler(async (req, res) => {
-    const { due_date, status, stage, priority, tags } = req.body || {};
+    const { due_date, status, stage, priority, tags, recurrence } = req.body || {};
     const patch = { ...req.body };
 
     if (due_date !== undefined && !DATE_RE.test(due_date)) {
@@ -103,6 +108,9 @@ router.patch(
     }
     if (priority !== undefined && !VALID_PRIORITIES.includes(priority)) {
       return res.status(422).json({ detail: "priority must be one of: " + VALID_PRIORITIES.join(", ") });
+    }
+    if (recurrence !== undefined && !VALID_RECURRENCES.includes(recurrence)) {
+      return res.status(422).json({ detail: "recurrence must be one of: " + VALID_RECURRENCES.join(", ") });
     }
     if (tags !== undefined) {
       const result = sanitizeTags(tags);

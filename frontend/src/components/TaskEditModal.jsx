@@ -8,6 +8,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
   const [stage, setStage] = useState(task.stage || "not_started");
   const [priority, setPriority] = useState(task.priority || "medium");
   const [tagsInput, setTagsInput] = useState((task.tags || []).join(", "));
+  const [recurrence, setRecurrence] = useState(task.recurrence || "none");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -29,6 +30,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
         stage,
         priority,
         tags,
+        recurrence,
       });
       onClose();
     } catch (err) {
@@ -95,6 +97,15 @@ export default function TaskEditModal({ task, onSave, onClose }) {
               onChange={(e) => setTagsInput(e.target.value)}
               placeholder="Comma-separated, e.g. work, urgent"
             />
+          </div>
+          <div className="field">
+            <label>Repeats</label>
+            <select value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+              <option value="none">Doesn't repeat</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
           </div>
           {error && <p className="auth-error">{error}</p>}
           <div className="modal-actions">

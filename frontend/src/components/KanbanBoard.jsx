@@ -36,7 +36,14 @@ function KanbanCard({ task, onEdit, onDelete }) {
         {task.title} <span className={`priority-badge priority-${task.priority}`}>{task.priority}</span>
       </div>
       {task.description && <div className="task-desc">{task.description}</div>}
-      <div className="task-meta">Due {task.due_date}</div>
+      <div className="task-meta">
+        Due {task.due_date}
+        {task.recurrence && task.recurrence !== "none" && (
+          <span className="recurrence-badge" title={`Repeats ${task.recurrence}`}>
+            🔁 {task.recurrence}
+          </span>
+        )}
+      </div>
       {task.tags?.length > 0 && (
         <div className="task-tags">
           {task.tags.map((tag) => (

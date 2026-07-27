@@ -178,6 +178,13 @@ header h1 {
   margin-left: 6px;
 }
 
+.recurrence-badge {
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: 8px;
+  text-transform: capitalize;
+}
+
 .priority-badge {
   font-size: 10px;
   font-weight: 600;

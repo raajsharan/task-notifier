@@ -13,6 +13,11 @@ export default function TaskItem({ task, onToggle, onDelete, onEdit }) {
           {task.description && <div className="task-desc">{task.description}</div>}
           <div className="task-meta">
             Due {task.due_date} {isOverdue && <span className="badge">Overdue</span>}
+            {task.recurrence && task.recurrence !== "none" && (
+              <span className="recurrence-badge" title={`Repeats ${task.recurrence}`}>
+                🔁 {task.recurrence}
+              </span>
+            )}
           </div>
           {task.tags?.length > 0 && (
             <div className="task-tags">
