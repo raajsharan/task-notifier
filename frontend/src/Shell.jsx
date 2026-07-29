@@ -147,6 +147,9 @@ export default function Shell() {
           <NavLink to="/kanban" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
             Kanban
           </NavLink>
+          <NavLink to="/calendar" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
+            Calendar
+          </NavLink>
           {user.is_admin && (
             <NavLink to="/admin" className={({ isActive }) => `page-nav-link ${isActive ? "active" : ""}`}>
               Admin
